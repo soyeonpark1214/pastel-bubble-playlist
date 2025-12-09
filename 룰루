@@ -37,7 +37,6 @@
       ); /* 파스텔 민트/하늘/노랑 그라데이션 */
       color: var(--text-main);
       position: relative;
-      overflow: hidden;
     }
 
     /* ===== 비눗방울 배경 ===== */
@@ -46,7 +45,6 @@
       inset: 0;
       pointer-events: none;
       z-index: 0;
-      overflow: hidden;
     }
 
     .bubble {
