@@ -32,7 +32,7 @@
 
 
 ## 배포 URL (GitHub Pages)
-**https://soyeonpark1214.github.io/-**  
+**https://soyeonpark1214.github.io/pastel-bubble-playlist/**  
 브라우저에서 바로 웹페이지 형태로 확인할 수 있습니다.
 
 ## 기술 스택
