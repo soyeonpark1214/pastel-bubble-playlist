@@ -69,7 +69,7 @@
 
 ## 개발 과정 요약
 - 디자인 컨셉 설정 (파스텔톤, 비눗방울 애니메이션)
-- HTML 구조 설계 (header → intro → song cards → footer)
+- HTML 구조 설계 
 - CSS 구현  
   - 그라데이션 배경  
   - Glassmorphism 카드  
