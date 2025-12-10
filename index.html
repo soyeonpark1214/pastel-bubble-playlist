@@ -3,438 +3,9 @@
 <head>
   <meta charset="UTF-8" />
   <title>Pastel Bubble Playlist</title>
-  <style>
-    /* ===== 기본 설정 ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --bubble-blue: #9CC7FF;
-      --bubble-mint: #A7E3C3;
-      --bubble-yellow: #FFEEC4;
-      --text-main: #22293a;
-      --text-sub: rgba(34, 41, 58, 0.85);
-      --card-bg: rgba(255, 255, 255, 0.45);
-      --shadow-soft: 0 6px 20px rgba(0, 0, 0, 0.08);
-      --glow-soft: 0 0 18px rgba(156, 199, 255, 0.35);
-    }
-
-    body {
-      font-family: "Pretendard", -apple-system, BlinkMacSystemFont, "Noto Sans KR",
-        system-ui, sans-serif;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: stretch;
-      background: linear-gradient(
-        120deg,
-        #e7f2ff,
-        #e6fff6,
-        #fff7d1
-      ); /* 파스텔 민트/하늘/노랑 그라데이션 */
-      color: var(--text-main);
-      position: relative;
-    }
-
-    /* ===== 비눗방울 배경 ===== */
-    .bubble-bg {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .bubble {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%,
-        rgba(255, 255, 255, 0.9),
-        rgba(156, 199, 255, 0.05)
-      );
-      opacity: 0.4;
-      backdrop-filter: blur(8px);
-      filter: blur(1px);
-      animation: bubbleFloat 18s ease-in-out infinite alternate;
-    }
-
-    .bubble-1 {
-      width: 220px;
-      height: 220px;
-      top: 8%;
-      left: 12%;
-      animation-delay: -4s;
-    }
-
-    .bubble-2 {
-      width: 320px;
-      height: 320px;
-      bottom: -8%;
-      right: -5%;
-      opacity: 0.35;
-      animation-delay: -9s;
-    }
-
-    .bubble-3 {
-      width: 140px;
-      height: 140px;
-      top: 45%;
-      right: 18%;
-      opacity: 0.45;
-      animation-delay: -2s;
-    }
-
-    .bubble-4 {
-      width: 180px;
-      height: 180px;
-      bottom: 18%;
-      left: 6%;
-      opacity: 0.5;
-      animation-delay: -13s;
-    }
-
-    @keyframes bubbleFloat {
-      0% {
-        transform: translate3d(0, 0, 0) scale(1);
-      }
-      50% {
-        transform: translate3d(10px, -20px, 0) scale(1.05);
-      }
-      100% {
-        transform: translate3d(-10px, -40px, 0) scale(1.1);
-      }
-    }
-
-    /* ===== 페이지 전체 레이아웃 ===== */
-    .page-container {
-      position: relative;
-      z-index: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 40px 20px 32px;
-    }
-
-    .content-inner {
-      width: 100%;
-      max-width: 960px;
-      display: flex;
-      flex-direction: column;
-      align-items: stretch;
-      gap: 28px;
-    }
-
-    /* ===== 헤더 영역 ===== */
-    .page-header {
-      text-align: center;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-    }
-
-    .logo-text {
-      font-size: 0.9rem;
-      font-weight: 300;
-      letter-spacing: 0.18em;
-      text-transform: uppercase;
-      color: var(--bubble-mint);
-    }
-
-    .page-title {
-      font-size: 2.1rem;
-      font-weight: 300;
-      letter-spacing: 0.04em;
-      color: var(--text-main);
-    }
-
-    .page-subtitle {
-      font-size: 0.98rem;
-      color: var(--text-sub);
-      opacity: 0.9;
-      max-width: 520px;
-      margin: 0 auto;
-      line-height: 1.6;
-    }
-
-    /* ===== 인트로 감성 문구 ===== */
-    .intro {
-      text-align: center;
-      margin-top: 8px;
-      margin-bottom: 4px;
-    }
-
-    .intro-line {
-      display: inline-block;
-      padding: 10px 16px;
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.45);
-      backdrop-filter: blur(10px);
-      box-shadow: var(--shadow-soft), var(--glow-soft);
-      font-size: 0.95rem;
-      color: var(--text-sub);
-    }
-
-    /* ===== 곡 카드 영역 ===== */
-    .songs {
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-      margin-top: 4px;
-      margin-bottom: 12px;
-    }
-
-    .song-card {
-      position: relative;
-      display: flex;
-      gap: 18px;
-      padding: 20px 22px;
-      border-radius: 22px;
-      background: var(--card-bg);
-      backdrop-filter: blur(12px);
-      box-shadow: var(--shadow-soft);
-      transition: transform 0.45s ease, filter 0.45s ease,
-        box-shadow 0.45s ease, background 0.45s ease;
-      animation: floatUp 0.85s ease-out forwards;
-      opacity: 0;
-      transform: translateY(24px);
-    }
-
-    .song-card::before {
-      content: "";
-      position: absolute;
-      inset: -1px;
-      border-radius: inherit;
-      border: 1px solid rgba(255, 255, 255, 0.45);
-      pointer-events: none;
-      mix-blend-mode: screen;
-      opacity: 0.65;
-    }
-
-    .song-card::after {
-      content: "";
-      position: absolute;
-      inset: 4px;
-      border-radius: inherit;
-      border: 1px solid rgba(156, 199, 255, 0.45);
-      opacity: 0;
-      transition: opacity 0.4s ease;
-      pointer-events: none;
-    }
-
-    .song-card:hover {
-      transform: translateY(-4px) scale(1.02);
-      filter: brightness(1.05);
-      box-shadow: var(--shadow-soft), var(--glow-soft);
-      background: rgba(255, 255, 255, 0.55);
-    }
-
-    .song-card:hover::after {
-      opacity: 1;
-    }
-
-    .song-meta {
-      flex: 0 0 40%;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    /* ===== 앨범 커버/사진 ===== */
-    .song-cover {
-      width: 100%;
-      max-width: 120px;
-      aspect-ratio: 1 / 1;
-      border-radius: 18px;
-      object-fit: cover;
-      box-shadow: var(--shadow-soft);
-    }
-
-    .song-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 10px;
-      border-radius: 999px;
-      background: rgba(167, 227, 195, 0.22);
-      font-size: 0.82rem;
-      color: var(--bubble-mint);
-      letter-spacing: 0.05em;
-      text-transform: uppercase;
-      font-weight: 400;
-    }
-
-    .song-tag-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%,
-        #ffffff,
-        var(--bubble-mint)
-      );
-    }
-
-    .song-title {
-      font-size: 1.2rem;
-      font-weight: 300;
-      letter-spacing: 0.03em;
-      color: var(--text-main);
-    }
-
-    .song-artist {
-      font-size: 0.92rem;
-      color: var(--text-sub);
-      opacity: 0.85;
-    }
-
-    .song-labels {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
-      margin-top: 6px;
-    }
-
-    .song-label {
-      padding: 3px 9px;
-      border-radius: 999px;
-      border: 1px solid rgba(156, 199, 255, 0.55);
-      font-size: 0.78rem;
-      color: rgba(34, 41, 58, 0.78);
-      background: radial-gradient(circle at 0 0,
-        rgba(255, 255, 255, 0.9),
-        rgba(231, 242, 255, 0.4)
-      );
-    }
-
-    .song-desc {
-      flex: 1;
-      min-width: 0;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .song-mood {
-      font-size: 0.86rem;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--bubble-blue);
-      opacity: 0.95;
-    }
-
-    .song-text {
-      font-size: 0.95rem;
-      color: var(--text-sub);
-      line-height: 1.7;
-    }
-
-    /* ✅ 포인트 텍스트 색만 더 진하게 변경 */
-    .song-highlight {
-      color: #208a6a; /* 더 진한 틴트 */
-      font-weight: 500;
-    }
-
-    /* 등장 애니메이션 - float */
-    @keyframes floatUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .song-card:nth-child(1) {
-      animation-delay: 0.05s;
-    }
-    .song-card:nth-child(2) {
-      animation-delay: 0.18s;
-    }
-    .song-card:nth-child(3) {
-      animation-delay: 0.31s;
-    }
-
-    /* ✅ 유튜브 링크 버튼 */
-    .song-links {
-      margin-top: 8px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-    }
-
-    .song-link {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 6px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(156, 199, 255, 0.7);
-      background: rgba(255, 255, 255, 0.8);
-      font-size: 0.8rem;
-      color: var(--text-main);
-      text-decoration: none;
-      transition: background 0.3s ease, color 0.3s ease,
-        box-shadow 0.3s ease, transform 0.3s ease;
-    }
-
-    .song-link:hover {
-      background: var(--bubble-blue);
-      color: #ffffff;
-      box-shadow: var(--glow-soft);
-      transform: translateY(-1px);
-    }
-
-    /* ===== 푸터 ===== */
-    .page-footer {
-      text-align: center;
-      margin-top: 12px;
-      font-size: 0.85rem;
-      color: rgba(34, 41, 58, 0.7);
-      opacity: 0.9;
-    }
-
-    .page-footer span {
-      color: var(--bubble-blue);
-    }
-
-    /* ===== 반응형 ===== */
-    @media (max-width: 720px) {
-      .page-container {
-        padding: 26px 18px 22px;
-      }
-
-      .page-title {
-        font-size: 1.6rem;
-      }
-
-      .page-subtitle {
-        font-size: 0.9rem;
-      }
-
-      .song-card {
-        flex-direction: column;
-        padding: 16px 16px 18px;
-      }
-
-      .song-meta {
-        flex-basis: auto;
-      }
-
-      .intro-line {
-        font-size: 0.88rem;
-        max-width: 90%;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="style.css"> 
 </head>
 <body>
-  <!-- 파스텔 비눗방울 배경 -->
   <div class="bubble-bg">
     <div class="bubble bubble-1"></div>
     <div class="bubble bubble-2"></div>
@@ -444,7 +15,6 @@
 
   <div class="page-container">
     <div class="content-inner">
-      <!-- header : 짧은 감성 문장 + 타이틀 -->
       <header class="page-header">
         <div class="logo-text">Pastel Bubble Tracks</div>
         <h1 class="page-title">공기 중에 떠 있는 나만의 세 곡</h1>
@@ -453,41 +23,36 @@
         </p>
       </header>
 
-      <!-- 감성 문구 section -->
       <section class="intro">
         <p class="intro-line">
-          오늘의 공기는 세 개의 작은 비눗방울처럼, <span class="song-highlight">가볍게·부드럽게·따뜻하게</span> 흔들립니다.
+          오늘의 공기는 세 개의 작은 비눗방울처럼, <span class="song-highlight">경쾌하게·따뜻하게·희망차게</span> 흔들립니다.
         </p>
       </section>
 
-      <!-- 곡 소개 영역 : 3개의 song-card -->
       <section class="songs">
-        <!-- 1. Karencici - 愛你但說不出口 -->
         <article class="song-card">
           <div class="song-meta">
-            <!-- ✅ 이미지: 실제 파일 이름으로 바꿔줘 -->
-            <img class="song-cover" src="스크린샷 2025-12-09 오후 6.41.03.png" 
-                alt="Karencici 愛你但說不出口">
+            <img class="song-cover" src="C:\Users\diddlfns\Desktop\roony\상상더하기.png" 
+                alt="라붐 상상더하기 앨범 커버">
 
 
             <div class="song-tag">
               <span class="song-tag-dot"></span>
-              slow confession
+              retro pop
             </div>
-            <h2 class="song-title">愛你但說不出口</h2>
-            <p class="song-artist">Karencici</p>
+            <h2 class="song-title">상상더하기 (Aalow Aalow)</h2>
+            <p class="song-artist">라붐 (LABOUM)</p>
 
             <div class="song-labels">
-              <span class="song-label">좋은 하루</span>
-              <span class="song-label">줄거운 시작</span>
+              <span class="song-label">복고풍</span>
+              <span class="song-label">파스텔톤</span>
               <span class="song-label">설렘설렘</span>
             </div>
 
-            <!-- ✅ 유튜브 링크 -->
             <div class="song-links">
               <a
                 class="song-link"
-                href="https://youtu.be/Bn69jJwOqXI?si=OwUTHhwwstjs-lNE"
+                href="http://www.youtube.com/watch?v=m0o7fbNKhpM"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -496,43 +61,40 @@
             </div>
           </div>
           <div class="song-desc">
-            <div class="song-mood">soft &amp; hazy bubble</div>
+            <div class="song-mood">retro & bubbly dream</div>
             <p class="song-text">
-              보컬이 <span class="song-highlight">차분하게 이어지는 느낌</span>을 주는 곡이에요.
-              전체적으로 <span class="song-highlight">안정된 분위기</span>가 잘 유지되고,
-              멜로디도 과하지 않아서 편하게 들을 수 있어요.
-              조용한 환경에서도 부담 없이 흐르는,
-              <span class="song-highlight">담담한 매력</span>이 있는 트랙이에요.
+              <span class="song-highlight">복고풍 신스팝</span>과 톡톡 튀는 리듬이 특징인 곡이에요.
+              프로젝트의 <span class="song-highlight">경쾌한 정체성</span>을 확립하기 위해 선택되었습니다.
+              순수한 설렘과 기대를 표현한 가사처럼,
+              <span class="song-highlight">파스텔톤의 디자인</span> 테마에 영감을 줍니다.
+              시작부터 기분 좋은 에너지를 불어넣는 트랙이에요.
             </p>
           </div>
         </article>
 
-        <!-- 2. HONNE - Warm On a Cold Night -->
         <article class="song-card">
           <div class="song-meta">
-            <!-- ✅ 이미지: 실제 파일 이름으로 바꿔줘 -->
-            <img class="song-cover" src="스크린샷 2025-12-09 오후 6.41.40.png" 
-                alt="HONNE Warm On a Cold Night">
+            <img class="song-cover" src="C:\Users\diddlfns\Desktop\roony\하얀그리움.png" 
+                alt="프로미스나인 하얀 그리움 앨범 커버">
 
 
             <div class="song-tag">
               <span class="song-tag-dot"></span>
-              warm groove
+              winter ballad
             </div>
-            <h2 class="song-title">Warm On a Cold Night</h2>
-            <p class="song-artist">HONNE</p>
+            <h2 class="song-title">하얀 그리움 (White Memories)</h2>
+            <p class="song-artist">프로미스나인 (fromis_9)</p>
 
             <div class="song-labels">
-              <span class="song-label">산책할때</span>
-              <span class="song-label">잠 잘 준비</span>
-              <span class="song-label">포근포근</span>
+              <span class="song-label">잔잔함</span>
+              <span class="song-label">미니멀</span>
+              <span class="song-label">따뜻한 기다림</span>
             </div>
 
-            <!-- ✅ 유튜브 링크 -->
             <div class="song-links">
               <a
                 class="song-link"
-                href="https://youtu.be/IG9M0oEPFz4?si=KGxMFDvCl3xnEkWb"
+                href="http://www.youtube.com/watch?v=5ZB9JLfIw_Q"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -541,42 +103,38 @@
             </div>
           </div>
           <div class="song-desc">
-            <div class="song-mood">minty night glow</div>
+            <div class="song-mood">clean & cozy whisper</div>
             <p class="song-text">
-              창밖은 차갑지만 방 안 공기가 <span class="song-highlight">살짝 따뜻해지는 느낌</span>.
-              이 노래를 틀면 분위기가 조금 안정되고,
-              오늘 하루도 괜찮겠다는 생각이 자연스럽게 들어요.
-              과하게 힘주지 않아도 조용히 균형을 잡아주는 곡이에요.
+              잔잔하고 <span class="song-highlight">따뜻한 겨울 발라드</span>로, 맑은 보컬이 인상적입니다.
+              프로젝트에 <span class="song-highlight">안정감 있는 UX</span>를 부여하기 위해 미니멀하고 깨끗한 톤을 담당합니다.
+              사용자에게 <span class="song-highlight">기다림과 약속의 가치</span>를 전달하는 영역(예: 알림, 대시보드)의 테마로 활용됩니다.
             </p>
           </div>
         </article>
 
-        <!-- 3. 검정치마 - 섬 (Queen of Diamonds) -->
         <article class="song-card">
           <div class="song-meta">
-            <!-- ✅ 이미지: 실제 파일 이름으로 바꿔줘 -->
-            <img class="song-cover" src="스크린샷 2025-12-09 오후 6.42.09.png" 
-                alt="검정치마 섬 Queen of Diamonds">
+            <img class="song-cover" src="C:\Users\diddlfns\Desktop\roony\day1.png" 
+                alt="레드벨벳 Day 1 앨범 커버">
 
 
             <div class="song-tag">
               <span class="song-tag-dot"></span>
-              dreamy island
+              fresh start pop
             </div>
-            <h2 class="song-title">섬 (Queen of Diamonds)</h2>
-            <p class="song-artist">검정치마</p>
+            <h2 class="song-title">Day 1</h2>
+            <p class="song-artist">레드벨벳 (Red Velvet)</p>
 
             <div class="song-labels">
-              <span class="song-label">집순이</span>
-              <span class="song-label">청소할때</span>
-              <span class="song-label">몽글몽글</span>
+              <span class="song-label">청량함</span>
+              <span class="song-label">새로운 시작</span>
+              <span class="song-label">긍정적 기대</span>
             </div>
 
-            <!-- ✅ 유튜브 링크 -->
             <div class="song-links">
               <a
                 class="song-link"
-                href="https://youtu.be/JR3pKwiHH2k?si=ikZnYkcWT3b2RDom"
+                href="http://www.youtube.com/watch?v=KTaa3Pbv9c0"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -585,18 +143,16 @@
             </div>
           </div>
           <div class="song-desc">
-            <div class="song-mood">soft pastel daydream</div>
+            <div class="song-mood">bright & hopeful sunrise</div>
             <p class="song-text">
-              청소하다가도, 침대에 엎드려 있다가도 갑자기
-              <span class="song-highlight">아주 멀리 떠내려가는 기분</span>을 만들어주는 노래.
-              기타와 보컬이 겹치면서, 내 방이 잠깐 바다 위
-              작은 섬처럼 느껴지기도 해요. 
+              밝고 경쾌하며 <span class="song-highlight">청량한 시작의 에너지</span>를 담고 있는 팝 트랙입니다.
+              프로젝트의 <span class="song-highlight">첫인상을 결정</span>하거나 튜토리얼, 온보딩 과정에 긍정적인 기대감을 주기에 적합합니다.
+              <span class="song-highlight">선명한 색상</span>을 포인트 컬러로 사용하여 활력을 부여할 것입니다.
             </p>
           </div>
         </article>
       </section>
 
-      <!-- footer : 아주 심플한 문장 -->
       <footer class="page-footer">
         오늘도 나만의 작은 <span>비눗방울 플레이리스트</span>가 공기 속에 천천히 떠오릅니다.
       </footer>
